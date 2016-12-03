@@ -90,6 +90,7 @@ class SparseMatrixOperationsTest(unittest.TestCase):
                     else:
                         self.assertEqual(self.matrix[row, column],
                                          self.other[row - 1, column])
+        self.assertEqual(len(self.matrix.entries), 2)
 
     def test_merge_column_offset(self):
         self.matrix.merge(self.other, column_offset=1)
@@ -102,6 +103,33 @@ class SparseMatrixOperationsTest(unittest.TestCase):
                     else:
                         self.assertEqual(self.matrix[row, column],
                                          self.other[row, column - 1])
+        self.assertEqual(len(self.matrix.entries), 2)
+
+    def test_merge_row_offset_negative(self):
+        self.matrix.merge(self.other, row_offset=-1)
+
+        for row in range(self.rows):
+            for column in range(self.columns):
+                with self.subTest(row=row, column=column):
+                    if row == 1:
+                        self.assertEqual(self.matrix[row, column], 0)
+                    else:
+                        self.assertEqual(self.matrix[row, column],
+                                         self.other[row + 1, column])
+        self.assertEqual(len(self.matrix.entries), 2)
+
+    def test_merge_column_offset_negative(self):
+        self.matrix.merge(self.other, column_offset=-1)
+
+        for row in range(self.rows):
+            for column in range(self.columns):
+                with self.subTest(row=row, column=column):
+                    if column == 1:
+                        self.assertEqual(self.matrix[row, column], 0)
+                    else:
+                        self.assertEqual(self.matrix[row, column],
+                                         self.other[row, column + 1])
+        self.assertEqual(len(self.matrix.entries), 2)
 
     def test_add(self):
         result = self.matrix + self.other

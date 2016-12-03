@@ -67,8 +67,8 @@ class SparseMatrix:
         # Filter entries
         filtered = {(row, column): value \
                     for (row, column), value in entries.items() \
-                    if  row    < self.rows \
-                    and column < self.columns}
+                    if  row    < self.rows and row >= 0\
+                    and column < self.columns and column >= 0}
 
         # Update existing entries
         for key in set(self.entries.keys()) & set(filtered.keys()):
