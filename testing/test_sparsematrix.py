@@ -1,11 +1,11 @@
 import unittest
-from util import sparsematrix
+from util.sparsematrix import SparseMatrix
 
 class SparseMatrixTest(unittest.TestCase):
     def setUp(self):
         self.rows = 2
         self.columns = 2
-        self.matrix = sparsematrix.SparseMatrix(self.rows, self.columns)
+        self.matrix = SparseMatrix(self.rows, self.columns)
 
     def test_assignment(self):
         assigned_value = 1
@@ -62,8 +62,8 @@ class SparseMatrixOperationsTest(unittest.TestCase):
         self.rows = 2
         self.columns = 2
 
-        self.matrix = sparsematrix.SparseMatrix(self.rows, self.columns)
-        self.other  = sparsematrix.SparseMatrix(self.rows, self.columns)
+        self.matrix = SparseMatrix(self.rows, self.columns)
+        self.other  = SparseMatrix(self.rows, self.columns)
 
         self.other[0, 0] = 1
         self.other[0, 1] = 2
@@ -142,7 +142,7 @@ class SparseMatrixOperationsTest(unittest.TestCase):
                                      + self.other[row, column])
 
     def test_inplace_add(self):
-        original = sparsematrix.SparseMatrix(self.rows, self.columns)
+        original = SparseMatrix(self.rows, self.columns)
         original.add_entries(self.matrix.entries)
         self.matrix += self.other
 

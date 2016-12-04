@@ -1,12 +1,12 @@
 import unittest
-from util import adapters
-from util import sparsematrix
+from util.adapters import GrayscaleChannel, GrayscaleAdapter, RGBAdapter
+from util.sparsematrix import SparseMatrix
 from PIL import Image, ImageDraw
 
 
 class GrayscaleChannelTest(unittest.TestCase):
     def setUp(self):
-        self.channel = adapters.GrayscaleChannel(2, 2)
+        self.channel = GrayscaleChannel(2, 2)
         self.max_value = 255
 
     def test_max(self):
@@ -20,7 +20,7 @@ class GrayscaleChannelTest(unittest.TestCase):
         self.assertEqual(self.channel.fill(value, self.max_value), value)
 
     def test_update(self):
-        matrix = sparsematrix.SparseMatrix(2, 2)
+        matrix = SparseMatrix(2, 2)
         matrix[0, 1] = 1
         matrix[1, 0] = 2
         matrix[1, 1] = 4
@@ -38,9 +38,9 @@ class GrayscaleAdapterTest(unittest.TestCase):
         self.rows = 2
         self.columns = 2
 
-        self.adapter = adapters.GrayscaleAdapter(self.columns, self.rows)
+        self.adapter = GrayscaleAdapter(self.columns, self.rows)
 
-        self.data = sparsematrix.SparseMatrix(self.rows, self.columns)
+        self.data = SparseMatrix(self.rows, self.columns)
         self.data[0, 0] = 1
         self.data[0, 1] = 2
         self.data[1, 0] = 3
@@ -81,20 +81,20 @@ class RGBAdapterTests(unittest.TestCase):
         self.rows = 3
         self.columns = 3
 
-        self.adapter = adapters.RGBAdapter(self.columns, self.rows)
+        self.adapter = RGBAdapter(self.columns, self.rows)
 
-        self.data = sparsematrix.SparseMatrix(self.rows, self.columns)
+        self.data = SparseMatrix(self.rows, self.columns)
         for row in range(self.rows):
             for column in range(self.columns):
                 self.data[row, column] = 1
 
-        self.r = sparsematrix.SparseMatrix(self.rows, self.columns)
+        self.r = SparseMatrix(self.rows, self.columns)
         self.r.merge(self.data, row_offset = -1, column_offset = -1)
 
-        self.g = sparsematrix.SparseMatrix(self.rows, self.columns)
+        self.g = SparseMatrix(self.rows, self.columns)
         self.g.merge(self.data, row_offset = -1, column_offset = 1)
 
-        self.b = sparsematrix.SparseMatrix(self.rows, self.columns)
+        self.b = SparseMatrix(self.rows, self.columns)
         self.b.merge(self.data, row_offset = 1)
 
         self.reference = Image.new('RGB', (self.columns, self.rows))

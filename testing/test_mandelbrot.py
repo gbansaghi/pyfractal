@@ -1,10 +1,10 @@
 import unittest
 import unittest.mock
-from fractals import mandelbrot
+from fractals.mandelbrot import Mandelbrot
 
 class MandelbrotTest(unittest.TestCase):
     def setUp(self):
-        self.mandelbrot = mandelbrot.Mandelbrot()
+        self.mandelbrot = Mandelbrot()
 
     def test_escape(self):
         self.assertEqual(self.mandelbrot
@@ -20,10 +20,9 @@ class MandelbrotTest(unittest.TestCase):
     def test_coordinates(self):
         iterations = 50
 
-        with unittest.mock.patch.object(mandelbrot.Mandelbrot,
-                                        'calculate_point',
+        with unittest.mock.patch.object(Mandelbrot, 'calculate_point',
                                         return_value = 0) as mock_calculate:
-            self.mandelbrot = mandelbrot.Mandelbrot(x_steps = 2, y_steps = 2)
+            self.mandelbrot = Mandelbrot(x_steps = 2, y_steps = 2)
             self.mandelbrot.calculate(iterations)
 
         calls = [unittest.mock.call(complex( 1,  1), iterations),
