@@ -18,7 +18,11 @@ class GrayscaleChannel:
 
         peak = max(data.values())
         for (row, column), level in data.items():
-            self.dr.point((column, row), self.fill(level, peak))
+            # SparseMatrix row 0 is at the top, PIL y=0 is at the bottom
+            y = (data.rows - 1) - row
+            x = column
+            self.dr.point((x, y), self.fill(level, peak))
+
 
 class GrayscaleAdapter:
     def __init__(self, width, height):
@@ -29,6 +33,7 @@ class GrayscaleAdapter:
         adapter = GrayscaleAdapter(matrix.columns, matrix.rows)
         if update:
             adapter.update(matrix)
+        
         return adapter
 
     def update(self, data: SparseMatrix):
@@ -51,12 +56,15 @@ class RGBAdapter:
     @staticmethod
     def from_matrices(r_matrix: SparseMatrix, g_matrix: SparseMatrix,
                       b_matrix: SparseMatrix, update = True):
-        if not r_matrix.rows == g_matrix.rows == b_matrix.rows \
-        or not r_matrix.columns == g_matrix.columns == b_matrix.columns:
-            raise ValueError('matrix dimensions must be equal!')
+        if not r_matrix.rows == g_matrix.rows == b_matrix.rows:
+            raise ValueError('matrices have mismatched number of rows!')
+        if not r_matrix.columns == g_matrix.columns == b_matrix.columns:
+            raise ValueError('matrices have mismatched number of columns!')
+
         adapter = RGBAdapter(width = r.matrix.columns, height = r.matrix.rows)
         if update:
             adapter.update(r_matrix, g_matrix, b_matrix)
+
         return adapter
 
     def update(self,
