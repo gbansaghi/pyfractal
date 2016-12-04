@@ -4,8 +4,8 @@ from util import binning
 
 class BinForValueTest(unittest.TestCase):
     def setUp(self):
-        self.settings = {'start': 0,
-                         'end': 1,
+        self.settings = {'start': 1,
+                         'end': 3,
                          'bins': 3}
 
     def test_out_of_bounds(self):
@@ -31,7 +31,7 @@ class BinForValueTest(unittest.TestCase):
                                   + self.settings['start']) / 2
         self.assertEqual(binning.bin_for_value(**self.settings),
                          int(self.settings['bins'] / 2))
-        
+
     def test_bin(self):
         self.settings['end'] = -1
         self.settings['value'] = (  self.settings['end']
@@ -42,8 +42,8 @@ class BinForValueTest(unittest.TestCase):
 
 class CenterForBinTest(unittest.TestCase):
     def setUp(self):
-        self.settings = {'start': 0,
-                         'end': 1,
+        self.settings = {'start': 1,
+                         'end': 3,
                          'bins': 3}
 
     def test_out_of_bounds(self):
@@ -57,9 +57,11 @@ class CenterForBinTest(unittest.TestCase):
 
     def test_center(self):
         self.settings['bin_'] = 1
-        self.assertEqual(binning.center_for_bin(**self.settings), 0.5)
+        self.assertEqual(binning.center_for_bin(**self.settings),
+                         (self.settings['start']+self.settings['end'])/2)
 
     def test_center_negative(self):
         self.settings['end'] = -1
         self.settings['bin_'] = 1
-        self.assertEqual(binning.center_for_bin(**self.settings), -0.5)
+        self.assertEqual(binning.center_for_bin(**self.settings),
+                         (self.settings['start']+self.settings['end'])/2)

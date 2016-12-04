@@ -5,7 +5,7 @@ def bin_for_value(start, end, bins, value):
     if value == end:
         return bins - 1
     else:
-        fraction = value / (end - start)
+        fraction = (value - start) / (end - start)
         return int(fraction*bins)
 
 def center_for_bin(start, end, bin_, bins):
@@ -13,4 +13,4 @@ def center_for_bin(start, end, bin_, bins):
         raise ValueError('bin number out of bounds')
 
     bin_width = (end - start) / bins
-    return (bin_ + 0.5)*(bin_width)
+    return start + ((bin_ + 0.5)*(bin_width))
