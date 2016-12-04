@@ -1,25 +1,16 @@
-def bounds_check(min_, max_):
-    if min_ >= max_:
-        raise ValueError('invalid bounds (must be min_ < max_)')
+def bin_for_value(start, end, bins, value):
+    if value < min(start, end) or value > max(start, end):
+        raise ValueError('value out of bounds')
 
-
-def bin_for_value(min_, max_, bins, value):
-    bounds_check(min_, max_)
-
-    if value < min_ or value > max_:
-        raise ValueError('value out of bounds (must be min_ <= value <= max_)')
-
-    if value == max_:
+    if value == end:
         return bins - 1
     else:
-        fraction = value / (max_ - min_)
+        fraction = value / (end - start)
         return int(fraction*bins)
 
-def center_for_bin(min_, max_, bin_, bins):
-    bounds_check(min_, max_)
-
+def center_for_bin(start, end, bin_, bins):
     if bin_ < 0 or bin_ >= bins:
-        raise ValueError('value out of bounds (must be 0 <= bin_ < bins)')
+        raise ValueError('bin number out of bounds')
 
-    bin_width = (max_ - min_) / bins
+    bin_width = (end - start) / bins
     return (bin_ + 0.5)*(bin_width)
