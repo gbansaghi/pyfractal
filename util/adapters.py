@@ -12,24 +12,27 @@ class GrayscaleChannel:
     def fill(self, value, peak):
         return binning.bin_for_value(0, peak, self.levels, value)
 
-
-class Adapter:
-    def update_channel(self, data: SparseMatrix, channel: GrayscaleChannel):
+    def update(self, data: SparseMatrix):
         if not data.values():
             return
 
         peak = max(data.values())
         for (row, column), level in data.items():
-            channel.dr.point((column, row), channel.fill(level, peak))
+            self.dr.point((column, row), self.fill(level, peak))
 
-class GrayscaleAdapter(Adapter):
+class GrayscaleAdapter:
     def __init__(self, width, height):
-        super(GrayscaleAdapter, self).__init__()
-
         self.channel = GrayscaleChannel(width, height)
 
+    @staticmethod
+    def from_matrix(matrix: SparseMatrix, update = True):
+        adapter = GrayscaleAdapter(matrix.columns, matrix.rows)
+        if update:
+            adapter.update(matrix)
+        return adapter
+
     def update(self, data: SparseMatrix):
-        self.update_channel(data, self.channel)
+        self.channel.update(data)
         return self
 
     def get_image(self):
@@ -39,14 +42,22 @@ class GrayscaleAdapter(Adapter):
         self.channel.im.save(filename)
 
 
-class RGBAdapter(Adapter):
+class RGBAdapter:
     def __init__(self, width, height):
-        super(RGBAdapter, self).__init__()
-
         self.channel_names = ('R', 'G', 'B')
-        self.channels = dict()
-        for channel_name in self.channel_names:
-            self.channels[channel_name] = GrayscaleChannel(width, height)
+        self.channels = {channel_name: GrayscaleChannel(width, height)
+                         for channel_name in self.channel_names}
+
+    @staticmethod
+    def from_matrices(r_matrix: SparseMatrix, g_matrix: SparseMatrix,
+                      b_matrix: SparseMatrix, update = True):
+        if not r_matrix.rows == g_matrix.rows == b_matrix.rows \
+        or not r_matrix.columns == g_matrix.columns == b_matrix.columns:
+            raise ValueError('matrix dimensions must be equal!')
+        adapter = RGBAdapter(width = r.matrix.columns, height = r.matrix.rows)
+        if update:
+            adapter.update(r_matrix, g_matrix, b_matrix)
+        return adapter
 
     def update(self,
                r_data: SparseMatrix,
@@ -56,8 +67,7 @@ class RGBAdapter(Adapter):
                 'G': g_data,
                 'B': b_data}
         for channel_name in self.channel_names:
-            self.update_channel(data[channel_name],
-                                self.channels[channel_name])
+            self.channels[channel_name].update(data[channel_name])
         return self
 
     def get_image(self):

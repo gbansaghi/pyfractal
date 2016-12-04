@@ -6,7 +6,7 @@ from PIL import Image, ImageDraw
 
 class GrayscaleChannelTest(unittest.TestCase):
     def setUp(self):
-        self.channel = adapters.GrayscaleChannel(1, 1)
+        self.channel = adapters.GrayscaleChannel(2, 2)
         self.max_value = 255
 
     def test_max(self):
@@ -19,19 +19,13 @@ class GrayscaleChannelTest(unittest.TestCase):
         value = 63
         self.assertEqual(self.channel.fill(value, self.max_value), value)
 
-
-class BaseAdapterTest(unittest.TestCase):
-    def setUp(self):
-        self.channel = adapters.GrayscaleChannel(2, 2)
-        self.adapter = adapters.Adapter()
-
     def test_update(self):
         matrix = sparsematrix.SparseMatrix(2, 2)
         matrix[0, 1] = 1
         matrix[1, 0] = 2
         matrix[1, 1] = 4
 
-        self.adapter.update_channel(matrix, self.channel)
+        self.channel.update(matrix)
 
         self.assertEqual(self.channel.im.getpixel((0, 0)),   0)
         self.assertEqual(self.channel.im.getpixel((1, 0)),  64)
